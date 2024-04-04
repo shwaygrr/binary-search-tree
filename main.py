@@ -1,5 +1,18 @@
-from bst import *
+from bst import BinarySearchTree
 
-# node = Node(10, 10)
-tree = BinarySearchTree(10)
+
+arr = [6, 4, 2, 3]
+
+tree = BinarySearchTree(arr)
+
+
+print(tree.root.value)
+
+# tree.buildTree(arr)
+
+# print(tree.root.value)
+
+
+
+
 
