@@ -65,4 +65,50 @@ class BinarySearchTree:
                 pre = n[2]
             print(linestr)
             print(pstr)
+    
+    #search for key
+    def search(self, value):
+        #recursive search function (dont want to give access to node_count param)
+        def _search(node, val, node_count):
+            if not node:
+                print(f'Node {node_count} does not contain key {val}')
+                return None
+            if val == node.value:
+                print(f'Node {node_count} contains key {val}')
+                return node_count
+            elif val < node.value:
+                return _search(node.left, val, node_count * 2)
+            elif val > node.value:
+                return _search(node.right, val, node_count * 2 + 1)
+
+        return _search(self.root, value, 1)
+
+    def insert(self, value):
+        parent = None
+        child = self.root
+
+        #find the parent node of insert node
+        while child is not None:
+            parent = child
+            if value < child.value:
+                child = child.left
+            else:
+                child = child.right
+        
+        #insert node
+        if parent is None: #tree empty
+            self.root = TreeNode(value)
+        elif value < parent.value: #insert to left child
+            parent.left = TreeNode(value)
+        else: #insert to right child
+            parent.right = TreeNode(value)
+        print(value, " inserted")
+        self.printTree()
+            
+
+
+
+
+
+
         
