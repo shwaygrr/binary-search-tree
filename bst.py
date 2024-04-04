@@ -64,13 +64,37 @@ class BinarySearchTree:
                 pre = n[2]
             print(linestr)
             print(pstr)
+        #parent of existing node
+    
+    #parent of existing node
+    def parent(self, value):
+        parent = None
+        child = self.root
+
+        if self.search(value) is not None:
+          print(f'{value} is not present in the tree.')
+          return None
+
+        while child is not None:
+            if value == child.value:
+                if parent:
+                    print(f'Parent of {value} is node with key {parent.value}')
+                    return parent
+                else:
+                    print(f'{value} is the root node, it has no parent.')
+                    return None
+            parent = child
+            if value < child.value:
+                child = child.left
+            else:
+                child = child.right
     
     #search for key
     def search(self, value):
         #recursive search function (dont want to give access to node_count param)
         def _search(node, val, node_count):
             if not node:
-                print(f'Node {node_count} does not contain key {val}')
+                print(f'Tree does not contain key {val}')
                 return None
             if val == node.value:
                 print(f'Node {node_count} contains key {val}')
@@ -104,34 +128,11 @@ class BinarySearchTree:
             parent.right = TreeNode(value)
         print(value, " inserted")
         self.printTree()
-
-    #parent of existing node
-    def parent(self, value):
-        parent = None
-        child = self.root
-
-        while child is not None:
-            if value == child.value:
-                if parent:
-                    # print(f'Parent of {value} is node with key {parent.value}')
-                    return parent
-                else:
-                    # print(f'{value} is the root node, it has no parent.')
-                    return None
-            parent = child
-            if value < child.value:
-                child = child.left
-            else:
-                child = child.right
-
-        print(f'{value} is not present in the tree.')
-        return None
     
     #insert node
     def delete(self, value):
         #algorithms from book
-        def treeMin(val):
-            root = self.search(val)
+        def treeMin(root):
             if root is None:
                 return None
             current = root
@@ -139,32 +140,29 @@ class BinarySearchTree:
                 current = current.left
             return current
         
-        def treeMax(val):
-            node = self.search(val)
-            if node is None:
+        def treeMax(root):
+            root = self.search(root)
+            if root is None:
                 return None
-            current = node
+            current = root
             while current.right is not None:
                 current = current.right
             return current
 
-        def successor(val):
-            val_node = self.search(val)
-            if val_node is None:
+        def successor(node):
+            if node is None:
                 return None
-            if val_node.right is not None: #return min of right subtree
-                return treeMin(val_node.right.value)
+            if node.right is not None: #return min of right subtree
+                return treeMin(node.right)
             
             #if not right subtree
-            parent = self.parent(val_node.value)
-            while parent is not None and val_node == parent.right:
-                val_node = parent
+            parent = self.parent(node.value)
+            while parent is not None and node == parent.right:
+                node = parent
                 parent = self.parent(successor.value)
             return parent
         
-        def predecessor(val):
-            node = self.search(val)
-
+        def predecessor(node):
             if node.left is not None:
                 return(treeMax(node.left.value))
             parent = self.parent(node.value)
@@ -190,13 +188,14 @@ class BinarySearchTree:
                     return root.right
                 else:
                     #find successor to replace the node
-                    successor = treeMin(root.right.value)
+                    successor = treeMin(root.right)
                     root.value = successor.value
                     root.right = _delete(successor.value, root.right)
             return root
 
         if self.search(value) is not None:
             self.root = _delete(value, self.root)
+            print(f'{value} deleted')
             self.printTree()
         else:
             print("Node does not exist")    
