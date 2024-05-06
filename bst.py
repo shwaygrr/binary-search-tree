@@ -1,17 +1,35 @@
 class TreeNode:
     def __init__(self, value=None):
+        """
+        Initializes a TreeNode with the given key.
+
+        Args:
+            value: The key to be stored in the node. Default is None.
+        """
         self.value = value
         self.left = None
         self.right = None
 
 class BinarySearchTree:
     def __init__(self, arr=None):
+        """
+        Initializes a BinarySearchTree with an optional array to build the tree.
+
+        Args:
+            arr: An optional array of values to build the BST. Default is None.
+        """
         self.root = None
         if arr:
             self.buildTree(arr)
     
     #build tree from array
     def buildTree(self, arr):
+        """
+        Builds a BST from the given array.
+
+        Args:
+            arr: An array of values to build the BST.
+        """
         def _buildTree(arr):
             if not arr:
                 return None
@@ -27,6 +45,9 @@ class BinarySearchTree:
 
     # Print tree https://stackoverflow.com/a/72497198/23355472
     def printTree(self):
+        """
+        Prints the BST in a tree-like format.
+        """
         #height
         def height(root):
             return 1 + max(height(root.left), height(root.right)) if root else -1
@@ -70,6 +91,15 @@ class BinarySearchTree:
     
     #search node by key
     def search(self, value):
+        """
+        Recursive Search for a node with the given key
+
+        Args:
+            value: The key to search for.
+
+        Returns:
+            The node containing the value if found, else None.
+        """
         #recursive search function (dont want to give access to node_count param)
         def _search(node, val, node_count):
             if not node:
@@ -87,6 +117,15 @@ class BinarySearchTree:
 
     #parent of existing node by key
     def parent(self, value):
+        """
+        Iterative search for parent of a node with the given key.
+
+        Args:
+            value: The key of the node whose parent is to be found.
+
+        Returns:
+            The parent node if found, else None.
+        """
         parent = None
         child = self.root
 
@@ -110,6 +149,12 @@ class BinarySearchTree:
 
     #insert node by key
     def insert(self, value):
+        """
+        Iteratively inserts a node with the given value to as a root
+
+        Args:
+            value: The value of the node to be inserted.
+        """
         if self.search(value) is not None:
             print("Key already exists, Cannot have duplicate keys")
         else:
@@ -136,6 +181,15 @@ class BinarySearchTree:
     
     #min of subtree by root key 
     def treeMin(self, subtree_key=None):
+        """
+        Finds the minimum value node in the subtree rooted at the node with given key.
+
+        Args:
+            subtree_key: The key of the root of the subtree. Default is root.
+
+        Returns:
+            The node with the minimum value in the subtree if found, else None.
+        """
         if subtree_key is None:
             subtree_key = self.root.value
         subtree_root = self.search(subtree_key)
@@ -150,6 +204,15 @@ class BinarySearchTree:
         
     #max of subtree by root key
     def treeMax(self, subtree_key=None):
+        """
+        Finds the maximum value node in the subtree rooted at the node with given key.
+
+        Args:
+            subtree_key: The key of the root of the subtree. Default is root.
+
+        Returns:
+            The node with the maximum value in the subtree if found, else None.
+        """
         if subtree_key is None:
             subtree_key = self.root.value
         subtree_root = self.search(subtree_key)
@@ -164,6 +227,15 @@ class BinarySearchTree:
     
     #successor of existing node by key
     def successor(self, node_key):
+        """
+        Finds the successor of a node with the given key.
+
+        Args:
+            node_key: The key of the node whose successor is to be found.
+
+        Returns:
+            The successor node if found, else None.
+        """
         node = self.search(node_key)
         if node is None:
             print(f"Key {node_key} does not exist")
@@ -182,25 +254,39 @@ class BinarySearchTree:
     
     #predecessor of existing node by key
     def predecessor(self, node_key):
-            node = self.search(node_key)
-            if node is None:
-                print(f"Key {node_key} does not exist")
-                return None
-            
-            print("Predecesssor: ")
-            if node.left is not None:
-                return(self.treeMax(node.left.value))
-            
-            #if no left subtree
-            parent = self.parent(node.value)
-            while parent is not None and node == parent.left:
-                node = parent
-                parent = self.parent(parent.value)
-            return parent
+        """
+        Finds the predecessor of a node with the given key in the BST.
+
+        Args:
+            node_key: The key of the node whose predecessor is to be found.
+
+        Returns:
+            The predecessor node if found, else None.
+        """
+        node = self.search(node_key)
+        if node is None:
+            print(f"Key {node_key} does not exist")
+            return None
+        
+        print("Predecesssor: ")
+        if node.left is not None:
+            return(self.treeMax(node.left.value))
+        
+        #if no left subtree
+        parent = self.parent(node.value)
+        while parent is not None and node == parent.left:
+            node = parent
+            parent = self.parent(parent.value)
+        return parent
     
     #delete node by key
     def delete(self, value):
-        #algorithms from book **move helper functions outside for general use**
+        """
+        Deletes the node with the given value from the BST.
+
+        Args:
+            value: The value of the node to be deleted.
+        """
         def _delete(val, root=None):
             if root is None:
                 return None

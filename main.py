@@ -4,7 +4,6 @@ if __name__ == '__main__':
 
   arr = [2, 6, 9, 3, 1, 9, 0, 4, 5]
 
-
   # build and print tree
   tree = BinarySearchTree(arr)
   tree.printTree()
