@@ -10,7 +10,7 @@ class BinarySearchTree:
         if arr:
             self.buildTree(arr)
     
-    #build tree
+    #build tree from array
     def buildTree(self, arr):
         def _buildTree(arr):
             if not arr:
@@ -21,7 +21,9 @@ class BinarySearchTree:
             root.right = _buildTree(arr[mid+1:])
             return root
         arr.sort()
-        self.root = _buildTree(arr)
+        set_arr = list(set(arr))
+        print(set_arr)
+        self.root = _buildTree(set_arr)
 
     # Print tree https://stackoverflow.com/a/72497198/23355472
     def printTree(self):
@@ -66,30 +68,7 @@ class BinarySearchTree:
             print(pstr)
         #parent of existing node
     
-    #parent of existing node
-    def parent(self, value):
-        parent = None
-        child = self.root
-
-        if self.search(value) is not None:
-          print(f'{value} is not present in the tree.')
-          return None
-
-        while child is not None:
-            if value == child.value:
-                if parent:
-                    print(f'Parent of {value} is node with key {parent.value}')
-                    return parent
-                else:
-                    print(f'{value} is the root node, it has no parent.')
-                    return None
-            parent = child
-            if value < child.value:
-                child = child.left
-            else:
-                child = child.right
-    
-    #search for key
+    #search node by key
     def search(self, value):
         #recursive search function (dont want to give access to node_count param)
         def _search(node, val, node_count):
@@ -106,71 +85,122 @@ class BinarySearchTree:
 
         return _search(self.root, value, 1)
 
-    #insert node
-    def insert(self, value):
+    #parent of existing node by key
+    def parent(self, value):
         parent = None
         child = self.root
 
-        #find the parent node of insert node
+        if self.search(value) is None:
+          print(f'{value} is not present in the tree.')
+          return None
+
         while child is not None:
+            if value == child.value:
+                if parent:
+                    print(f'Parent of {value} is node with key {parent.value}')
+                    return parent
+                else:
+                    print(f'{value} is the root node, it has no parent.')
+                    return None
             parent = child
             if value < child.value:
                 child = child.left
             else:
-                child = child.right
-        
-        #insert node
-        if parent is None: #tree empty
-            self.root = TreeNode(value)
-        elif value < parent.value: #insert to left child
-            parent.left = TreeNode(value)
-        else: #insert to right child
-            parent.right = TreeNode(value)
-        print(value, " inserted")
-        self.printTree()
-    
-    #insert node
-    def delete(self, value):
-        #algorithms from book
-        def treeMin(root):
-            if root is None:
-                return None
-            current = root
-            while current.left is not None:
-                current = current.left
-            return current
-        
-        def treeMax(root):
-            root = self.search(root)
-            if root is None:
-                return None
-            current = root
-            while current.right is not None:
-                current = current.right
-            return current
+                child = child.right    
 
-        def successor(node):
-            if node is None:
-                return None
-            if node.right is not None: #return min of right subtree
-                return treeMin(node.right)
-            
-            #if not right subtree
-            parent = self.parent(node.value)
-            while parent is not None and node == parent.right:
-                node = parent
-                parent = self.parent(successor.value)
-            return parent
+    #insert node by key
+    def insert(self, value):
+        if self.search(value) is not None:
+            print("Key already exists, Cannot have duplicate keys")
+        else:
+            parent = None
+            child = self.root
+
+            #find the parent node of new node
+            while child is not None:
+                parent = child
+                if value < child.value:
+                    child = child.left
+                else:
+                    child = child.right
+
+            #insert node
+            if parent is None: #tree empty
+                self.root = TreeNode(value)
+            elif value < parent.value: #insert to left child
+                parent.left = TreeNode(value)
+            else: #insert to right child
+                parent.right = TreeNode(value)
+            print(value, " inserted")
+            self.printTree()
+    
+    #min of subtree by root key 
+    def treeMin(self, subtree_key=None):
+        if subtree_key is None:
+            subtree_key = self.root.value
+        subtree_root = self.search(subtree_key)
+        if subtree_root is None:
+            print(f"Key {subtree_key} does not exist")
+            return None
+        current = subtree_root
+        while current.left is not None:
+            current = current.left
+        print(f"Min of subtree with root {subtree_key} is {current.value}")
+        return current
         
-        def predecessor(node):
+    #max of subtree by root key
+    def treeMax(self, subtree_key=None):
+        if subtree_key is None:
+            subtree_key = self.root.value
+        subtree_root = self.search(subtree_key)
+        if subtree_root is None:
+            print(f"Key {subtree_key} does not exist")
+            return None
+        current = subtree_root
+        while current.right is not None:
+            current = current.right
+        print(f"Max of subtree with root {subtree_key} is {current.value}")
+        return current
+    
+    #successor of existing node by key
+    def successor(self, node_key):
+        node = self.search(node_key)
+        if node is None:
+            print(f"Key {node_key} does not exist")
+            return None
+        
+        print("Succcessor: ")
+        if node.right is not None: #return min of right subtree
+            return self.treeMin(node.right.value)
+        
+        #if no right subtree
+        parent = self.parent(node.value)
+        while parent is not None and node == parent.right:
+            node = parent
+            parent = self.parent(parent.value)
+        return parent
+    
+    #predecessor of existing node by key
+    def predecessor(self, node_key):
+            node = self.search(node_key)
+            if node is None:
+                print(f"Key {node_key} does not exist")
+                return None
+            
+            print("Predecesssor: ")
             if node.left is not None:
-                return(treeMax(node.left.value))
+                return(self.treeMax(node.left.value))
+            
+            #if no left subtree
             parent = self.parent(node.value)
             while parent is not None and node == parent.left:
                 node = parent
                 parent = self.parent(parent.value)
             return parent
-        
+    
+    #delete node by key
+    def delete(self, value):
+        #algorithms from book **move helper functions outside for general use**
         def _delete(val, root=None):
             if root is None:
                 return None
@@ -188,7 +218,7 @@ class BinarySearchTree:
                     return root.right
                 else:
                     #find successor to replace the node
-                    successor = treeMin(root.right)
+                    successor = self.treeMin(root.right.value)
                     root.value = successor.value
                     root.right = _delete(successor.value, root.right)
             return root

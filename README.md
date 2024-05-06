@@ -1,2 +1,2 @@
-# binary-search-tree
-Binary Search Tree (BST) implementation
+# Small Binary Search Tree (BST) Library
+
